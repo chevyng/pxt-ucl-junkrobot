@@ -9,7 +9,8 @@
     },
     "files": [
         "README.md",
-        "main.ts"
+        "main.ts",
+        "pxt.json"
     ],
     "testFiles": [],
     "public": true
