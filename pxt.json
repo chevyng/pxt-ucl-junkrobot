@@ -1,0 +1,16 @@
+{
+    "name": "ucl-junkrobot",
+    "version": "0.0.0",
+    "description": "A junk robot prototype using 28BYJ-48 stepper motor",
+    "license": "MIT",
+    "dependencies": {
+        "core": "*",
+        "radio": "*"
+    },
+    "files": [
+        "README.md",
+        "main.ts"
+    ],
+    "testFiles": [],
+    "public": false
+}
