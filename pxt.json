@@ -12,5 +12,5 @@
         "main.ts"
     ],
     "testFiles": [],
-    "public": false
+    "public": true
 }
