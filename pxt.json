@@ -12,6 +12,6 @@
         "main.ts",
         "pxt.json"
     ],
-    "testFiles": [],
+    "testFiles": ["tests.ts"],
     "public": true
 }
