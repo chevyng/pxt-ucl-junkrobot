@@ -1,6 +1,6 @@
 {
     "name": "ucl-junkrobot",
-    "version": "0.0.8",
+    "version": "0.0.9",
     "description": "A junk robot prototype using 28BYJ-48 stepper motor",
     "license": "MIT",
     "dependencies": {
@@ -12,6 +12,8 @@
         "main.ts",
         "pxt.json"
     ],
-    "testFiles": ["tests.ts"],
+    "testFiles": [
+        "tests.ts"
+    ],
     "public": true
 }
