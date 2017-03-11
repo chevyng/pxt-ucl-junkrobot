@@ -1,3 +1,17 @@
+enum PingUnit {
+//% block="cm"
+Centimeters,
+//% block="μs"
+MicroSeconds
+}
+
+enum DistUnit {
+//% block="steps"
+Steps,
+//% block="cm"
+Centimeters
+}
+
 /**
  * UCL junk robot prototype code using 28BYJ-48 stepper motors
  */
@@ -21,10 +35,14 @@ namespace junkrobot {
             this.input4 = in4;
         }
 
-        //% blockId=set_motor_calibration block="%motor|set calibration value %calibration" blockGap=8
+        //% blockId=set_motor_calibration block="%motor|set turning calibration value %calibration" blockGap=8
         //% advanced=true
         setCalibration(calibration: number): void {
             this.calibration = calibration;
+        }
+
+        getCalibration(): number {
+            return this.calibration;
         }
 
         setState(stateNum: number): void {
@@ -75,7 +93,6 @@ namespace junkrobot {
             }
 
             this.state = this.state + direction;
-            //console.log("State: " + this.state);
             if (this.state < 0) {
                 this.state = 7;
             } else if (this.state > 7) {
@@ -94,17 +111,14 @@ namespace junkrobot {
             this.motorR = motorR;
         }
 
-        //% blockId=move_forward block="%this|move %steps| steps forward"
-        moveForward(steps: number): void {
-            for (var i = 0; i < steps; i++) {
-                this.motorL.steps(1);
-                this.motorR.steps(-1);
-                basic.pause(1);
+        //% blockId=move_forward block="%this|move %steps|%unit| forward"
+        //% weight=81
+        moveForward(steps: number, unit: DistUnit): void {
+            switch (unit) {
+                case DistUnit.Centimeters: steps = steps * 273; //273 steps = 1cm
+                case DistUnit.Steps: steps = steps ;
             }
-        }
 
-        //% blockId=move_backward block="%this|move %steps| steps backward"
-        moveBackward(steps: number): void {
             for (var i = 0; i < steps; i++) {
                 this.motorL.steps(-1);
                 this.motorR.steps(1);
@@ -112,44 +126,85 @@ namespace junkrobot {
             }
         }
 
-        //% blockId=turn_left block="%this|turn left degrees %degrees"
-        turnLeft(degrees: number): void {
-            for (var i = 0; i < degrees; i++) {
-                this.motorL.steps(-1);
-                //this.motorR.steps(-1);
-                basic.pause(1);
+        //% blockId=move_backward block="%this|move %steps|%unit| backward"
+        //% weight=80
+        moveBackward(steps: number, unit: DistUnit): void {
+            switch (unit) {
+                case DistUnit.Centimeters: steps = steps * 273; //273 steps = 1cm
+                case DistUnit.Steps: steps = steps ;
             }
-        }
 
-        //% blockId=turn_right block="%this|turn right degrees %degrees"
-        turnRight(degrees: number): void {
-            for (var i = 0; i < degrees; i++) {
+            for (var i = 0; i < steps; i++) {
                 this.motorL.steps(1);
-                //this.motorR.steps(1);
+                this.motorR.steps(-1);
                 basic.pause(1);
             }
         }
 
-        //% blockId=turn_n_degrees block="%robot|angle %angle"
+        //% blockId=turn_left block="%this| turnLeft()"
+        //% weight=71
+        turnLeft(): void {
+            for (var i = 0; i < 90 * (this.motorL.getCalibration()); i++) {
+                this.motorL.steps(1);
+                this.motorR.steps(1);
+                basic.pause(1);
+            }
+        }
+
+        //% blockId=turn_right block="%this| turnRight()"
+        //% weight=70
+        turnRight(): void {
+            for (var i = 0; i < 90 * (this.motorL.getCalibration()); i++) {
+                this.motorL.steps(-1);
+                this.motorR.steps(-1);
+                basic.pause(1);
+            }
+        }
+
+        //% blockId=turn_right_error block="%this| turnRight()| with %error| steps calibration"
+        //% advanced=true
+        turnRight_steps(error: number): void {
+            for (var i = 0; i < ( (90 * this.motorL.getCalibration()) - error ); i++) {
+                this.motorL.steps(-1);
+                this.motorR.steps(-1);
+                basic.pause(1);
+            }
+        }
+
+        //% blockId=turn_left_error block="%this| turnLeft()|with %error| steps calibration"
+        //% advanced=true
+        turnLeft_steps(error: number): void {
+            for (var i = 0; i < ( (90 * this.motorL.getCalibration()) - error ); i++) {
+                this.motorL.steps(1);
+                this.motorR.steps(1);
+                basic.pause(1);
+            }
+        }
+
+
+        //% blockId=turn_n_degrees block="%robot|turn %angle|degrees"
+        //% advanced=true
         turn(angle: number): void {
             let direction: number;
           //  var ticks: number = 34.249;
-            console.log("nTicks value: " + angle);
+            console.log("Turning : " + angle);
             if (angle > 0) {
                 direction = -1;
             }
             else if (angle < 0) {
                 direction = 1;
+                angle = (0-angle);
             }
             else if (angle == 0) {
                 direction = 0;
             }
 
+            // console.log("new nTicks value: " + angle);
             if (direction != 0) {
                 //var nTicks: number;
                 //nTicks = angle * ticks;
                 //console.log("nTicks value: " + nTicks);
-                for (var i = 0; i < angle; i++) {
+                for (var i = 0; i < (angle* this.motorL.getCalibration()); i++) {
                     this.motorL.steps(direction);
                     this.motorR.steps(direction);
                     basic.pause(1);
@@ -165,8 +220,8 @@ namespace junkrobot {
         : Motor {
         let motor = new Motor();
         motor.setPins(input1, input2, input3, input4);
-        motor.setCalibration(522);
-        motor.setState(0);
+        motor.setCalibration(32); //standard calibration set to 32
+        motor.setState(1);
         return motor;
     }
 
@@ -176,5 +231,28 @@ namespace junkrobot {
         let robot = new Robot();
         robot.setMotors(motorL, motorR);
         return robot;
+    }
+
+
+
+    //% blockId=ultrasonic_sensor block="sensor trig %trig|echo %echo|unit %unit"
+    //% weight=95
+    export function sensor(trig: DigitalPin, echo: DigitalPin, unit: PingUnit, maxCmDistance = 500): number {
+        // send pulse
+        pins.setPull(trig, PinPullMode.PullNone);
+        pins.digitalWritePin(trig, 0);
+        control.waitMicros(2);
+        pins.digitalWritePin(trig, 1);
+        control.waitMicros(10);
+        pins.digitalWritePin(trig, 0);
+
+        // read pulse
+        let d = pins.pulseIn(echo, PulseValue.High, maxCmDistance * 42);
+        console.log("Distance: " + d/42);
+
+        switch (unit) {
+            case PingUnit.Centimeters: return d / 42;
+            default: return d ;
+        }
     }
 }
