@@ -119,7 +119,7 @@ namespace junkrobot {
                 case DistUnit.Steps: steps = steps ;
             }
 
-            for (var i = 0; i < steps; i++) {
+            for (let i = 0; i < steps; i++) {
                 this.motorL.steps(-1);
                 this.motorR.steps(1);
                 basic.pause(1);
