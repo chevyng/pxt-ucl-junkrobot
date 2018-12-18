@@ -134,7 +134,7 @@ namespace junkrobot {
                 case DistUnit.Steps: steps = steps ;
             }
 
-            for (var i = 0; i < steps; i++) {
+            for (let i = 0; i < steps; i++) {
                 this.motorL.steps(1);
                 this.motorR.steps(-1);
                 basic.pause(1);
@@ -144,7 +144,7 @@ namespace junkrobot {
         //% blockId=turn_left block="%this| turnLeft()"
         //% weight=71
         turnLeft(): void {
-            for (var i = 0; i < 90 * (this.motorL.getCalibration()); i++) {
+            for (let i = 0; i < 90 * (this.motorL.getCalibration()); i++) {
                 this.motorL.steps(1);
                 this.motorR.steps(1);
                 basic.pause(1);
@@ -154,7 +154,7 @@ namespace junkrobot {
         //% blockId=turn_right block="%this| turnRight()"
         //% weight=70
         turnRight(): void {
-            for (var i = 0; i < 90 * (this.motorL.getCalibration()); i++) {
+            for (let i = 0; i < 90 * (this.motorL.getCalibration()); i++) {
                 this.motorL.steps(-1);
                 this.motorR.steps(-1);
                 basic.pause(1);
@@ -164,7 +164,7 @@ namespace junkrobot {
         //% blockId=turn_right_error block="%this| turnRight()| with %error| steps calibration"
         //% advanced=true
         turnRight_steps(error: number): void {
-            for (var i = 0; i < ( (90 * this.motorL.getCalibration()) - error ); i++) {
+            for (let i = 0; i < ( (90 * this.motorL.getCalibration()) - error ); i++) {
                 this.motorL.steps(-1);
                 this.motorR.steps(-1);
                 basic.pause(1);
@@ -174,7 +174,7 @@ namespace junkrobot {
         //% blockId=turn_left_error block="%this| turnLeft()|with %error| steps calibration"
         //% advanced=true
         turnLeft_steps(error: number): void {
-            for (var i = 0; i < ( (90 * this.motorL.getCalibration()) - error ); i++) {
+            for (let i = 0; i < ( (90 * this.motorL.getCalibration()) - error ); i++) {
                 this.motorL.steps(1);
                 this.motorR.steps(1);
                 basic.pause(1);
@@ -204,7 +204,7 @@ namespace junkrobot {
                 //var nTicks: number;
                 //nTicks = angle * ticks;
                 //console.log("nTicks value: " + nTicks);
-                for (var i = 0; i < (angle* this.motorL.getCalibration()); i++) {
+                for (let i = 0; i < (angle* this.motorL.getCalibration()); i++) {
                     this.motorL.steps(direction);
                     this.motorR.steps(direction);
                     basic.pause(1);
